@@ -18,7 +18,15 @@ class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
-    return {...items};
+    return {..._items};
+  }
+
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach((key, item) {
+      total += item.price * item.quantity;
+    });
+    return total;
   }
 
   int get itemsCount {
