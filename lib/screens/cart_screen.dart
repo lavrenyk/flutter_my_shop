@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
+import '../providers/orders.dart';
+import '../widgets/app_drawer.dart';
 
 class CartScreen extends StatelessWidget {
   @override
@@ -13,6 +15,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your cart'),
       ),
+      drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
           Card(
@@ -32,7 +35,7 @@ class CartScreen extends StatelessWidget {
                   Spacer(),
                   Chip(
                     label: Text(
-                      '\$${cart.totalAmount}',
+                      '\$${cart.totalAmount.toStringAsFixed(2)}',
                       style: TextStyle(
                         color: Theme.of(context).primaryTextTheme.title.color,
                       ),
@@ -44,8 +47,14 @@ class CartScreen extends StatelessWidget {
                       'ORDER NOW',
                     ),
                     textColor: Theme.of(context).primaryColor,
-                    onPressed: () {},
-                  )
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        cart.items.values.toList(),
+                        cart.totalAmount,
+                      );
+                      cart.clearCart();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -56,6 +65,7 @@ class CartScreen extends StatelessWidget {
               itemCount: cart.itemsCount,
               itemBuilder: (ctx, i) => CartItem(
                 cart.items.values.toList()[i].id,
+                cart.items.keys.toList()[i],
                 cart.items.values.toList()[i].title,
                 cart.items.values.toList()[i].price,
                 cart.items.values.toList()[i].quantity,
